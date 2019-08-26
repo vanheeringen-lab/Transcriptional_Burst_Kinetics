@@ -1,0 +1,7 @@
+name: MMGPS
+dependencies:
+  - numpy
+  - python=3.7
+  - pip=19.2.1
+  - pip:
+    - simpy
