@@ -1,14 +1,25 @@
 import simpy
 import random
 from product import Product
-import numpy as np
 
 
 class Gene:
     """
+    A gene class, which is either active or inactive.
 
+    Depending on whether or not the gene is active or not, it is transcribing gene products.
     """
-    def __init__(self, env, la, mu, nu, de, active=False):
+    def __init__(self, env: simpy.core.Environment, la: float, mu: float, nu: float, de: float, active: bool = False):
+        """
+        Initialization of the gene.
+
+        :param env:    simpy environment class
+        :param la:     lambda (gene activation rate)
+        :param mu:     mu (gene inactivation rate)
+        :param nu:     nu (product synthesis rate)
+        :param de:     delta (product degradation rate)
+        :param active: whether or not the gene is active
+        """
         # store the args in self
         self.env = env
         self.la = la  # lambda
@@ -30,7 +41,9 @@ class Gene:
 
     def run(self):
         """
-
+        While the environment doesn't interrupt this function, the gene switches between active and inactive depending
+        on the the lambda and mu values. When a gene is activated it starts a transcribe process, and when a gene
+        is deactivated, it interrupts it.
         """
         while True:
             if self.active:
@@ -51,7 +64,7 @@ class Gene:
 
     def transcribe(self):
         """
-
+        Generate gene products.
         """
         while True:
             try:

@@ -1,11 +1,21 @@
 import random
+import simpy
 
 
 class Product:
     """
+    Gene product class.
 
+    When initialized it starts it starts degradation with rate delta (often all parameters are divided by delta, so that
+    all times are relative to the half-time of the product).
     """
-    def __init__(self, env, de):
+    def __init__(self, env: simpy.core.Environment, de: float):
+        """
+        Initialization of the product.
+
+        :param env: simpy environment class
+        :param de:  delta (the rate of product degradation)
+        """
         self.env = env
         self.de = de
         self.start = self.env.now
@@ -14,7 +24,7 @@ class Product:
 
     def degradadation(self):
         """
-
+        Degrade after 1/delta time on average.
         """
         t = random.expovariate(self.de)
         yield self.env.timeout(t)
