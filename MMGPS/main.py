@@ -3,10 +3,10 @@ from gene import Gene
 
 
 if __name__ == "__main__":
-    lambd = 0.1  # rate from inactive -> active
-    mu =    0.2  # rate from active -> inactive
-    nu =    0.3  # rate from active -> product
-    delta = 0.4  # rate from product -> degraded
+    lambd = 2    # rate from inactive -> active
+    mu =    0.5  # rate from active -> inactive
+    nu =    2    # rate from active -> product
+    delta = 1    # rate from product -> degraded
 
     # start the environment
     env = simpy.Environment()
@@ -15,7 +15,8 @@ if __name__ == "__main__":
     gene = Gene(env, lambd, mu, nu, delta)
 
     # run for fixed amount of time
-    env.run(until=1500)
+    env.run(until=5000)
 
     products = [product for product in gene.products if not product.degraded]
-    print(f"There are {len(products)} gene products after {env.now} (unitless) time")
+    print(f"There are {len(products)} gene products after {env.now} (unitless) time, and an average of {np.mean(vals)}")
+    print(f"and we expect: {((lambd * nu) / ((lambd + mu) * delta))}")
