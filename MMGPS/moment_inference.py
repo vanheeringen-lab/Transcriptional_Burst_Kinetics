@@ -18,11 +18,11 @@ def moment_inference(vals: np.array):
         return np.array([np.nan, np.nan, np.nan])
 
     r1 = m1
-    r2 = m2/m1
-    r3 = m3/m2
+    r2 = m2 / m1
+    r3 = m3 / m2
 
-    la_denom = (r1*r2 - 2*r1*r3 + r2*r3)
-    nu_denom = (r1 - 2*r2 + r3)
+    la_denom = (r1 * r2 - 2 * r1 * r3 + r2 * r3)
+    nu_denom = (r1 - 2 * r2 + r3)
 
     if 0 in [la_denom, nu_denom]:
         return np.array([np.nan, np.nan, np.nan])

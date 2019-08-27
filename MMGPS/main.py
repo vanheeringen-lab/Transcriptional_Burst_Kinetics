@@ -3,12 +3,11 @@ from gene import Gene
 from moment_inference import moment_inference
 import numpy as np
 
-
 if __name__ == "__main__":
-    lambd = 2    # rate from inactive -> active
-    mu = 0.5     # rate from active -> inactive
-    nu = 4       # rate from active -> product
-    delta = 1    # rate from product -> degraded
+    lambd = 2  # rate from inactive -> active
+    mu = 0.5  # rate from active -> inactive
+    nu = 4  # rate from active -> product
+    delta = 1  # rate from product -> degraded
 
     products = []
     for i in range(150):

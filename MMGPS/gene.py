@@ -9,6 +9,7 @@ class Gene:
 
     Depending on whether or not the gene is active or not, it is transcribing gene products.
     """
+
     def __init__(self, env: simpy.core.Environment, la: float, mu: float, nu: float, de: float, active: bool = False):
         """
         Initialization of the gene.

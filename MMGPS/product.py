@@ -9,6 +9,7 @@ class Product:
     When initialized it starts it starts degradation with rate delta (often all parameters are divided by delta, so that
     all times are relative to the half-time of the product).
     """
+
     def __init__(self, env: simpy.core.Environment, de: float):
         """
         Initialization of the product.
