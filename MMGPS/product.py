@@ -21,9 +21,9 @@ class Product:
         self.de = de
         self.start = self.env.now
         self.end = None
-        self.process = env.process(self.degradadation())
+        self.process = env.process(self.degradation())
 
-    def degradadation(self):
+    def degradation(self):
         """
         Degrade after 1/delta time on average.
         """
