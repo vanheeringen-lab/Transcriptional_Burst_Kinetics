@@ -3,7 +3,7 @@ import numpy as np
 
 
 @jit()
-def moment_inference(vals):
+def moment_inference(vals: np.array):
     """
     Estimate parameters lambda, mu, and nu based on their first three moments.
     Based on the paper: Markovian Modelling of Gene Product Synthesis
