@@ -38,13 +38,14 @@ def moment_based(vals: np.array) -> np.array:
     return np.array([la_est, mu_est, nu_est])
 
 
-def bp3_log_likelihood(vals: np.array, alpha: float, beta: float, lambd: float) -> float:
+def bp3_log_likelihood(params: tuple, vals: np.array) -> float:
     """
 
     """
+    alpha, beta, lambd = params
     x, w = scipy.special.j_roots(50, alpha=beta - 1, beta=alpha - 1)
     # estimate the
-    gs = np.sum(w*scipy.stats.poisson.pmf(vals, m=lambd*(x + 1) / 2), axis=1)
+    gs = np.sum(w*scipy.stats.poisson.pmf(vals, lambd*(x + 1) / 2), axis=1)
 
     # calculate the probability
     prob = (1 / scipy.special.beta(alpha, beta)) * \
