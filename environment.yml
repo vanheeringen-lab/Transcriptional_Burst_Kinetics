@@ -1,4 +1,4 @@
-name: MMGPS
+name: TBK
 dependencies:
   - numpy
   - python=3.7
