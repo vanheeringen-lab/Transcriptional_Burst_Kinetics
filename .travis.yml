@@ -32,6 +32,7 @@ install:
 
 
 script:
+  - source activate TBK
   - python tests/beta_poisson.py
 
 # speedup the slow build of our environment by caching (mini)conda
