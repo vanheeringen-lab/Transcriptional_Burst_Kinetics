@@ -46,7 +46,7 @@ script:
   - coverage run tests/beta_poisson.py
 
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --file .coverage
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --coverage-input-type coverage.py
 
 # speedup the slow build of our environment by caching (mini)conda
 cache:
