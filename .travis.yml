@@ -2,6 +2,11 @@ language: python
 python:
   - 3.7
 
+# set env variables
+env:
+  global:
+    - CC_TEST_REPORTER_ID=6bb98669df7b436872c1aae8ed6868c10bdcdaf7f9d7e4906078fb446b24cb1a
+
 
 install:
   # sudo apt-get update (enable once apt-get is used)
@@ -30,11 +35,18 @@ install:
       conda env create -f environment.yml;
     fi
 
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 script:
   - source activate TBK
 
   - coverage run tests/beta_poisson.py
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 # speedup the slow build of our environment by caching (mini)conda
 cache:
