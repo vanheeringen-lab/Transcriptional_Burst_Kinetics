@@ -1,6 +1,7 @@
 name: TBK
 dependencies:
   - numpy
+  - scipy
   - python=3.7
   - pandas
   - numpy
