@@ -43,7 +43,7 @@ before_script:
 script:
   - source activate TBK
 
-  - coverage run tests/beta_poisson.py
+  - coverage xml tests/beta_poisson.py
 
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT --coverage-input-type coverage.py
