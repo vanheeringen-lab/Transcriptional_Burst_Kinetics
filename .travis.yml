@@ -36,6 +36,7 @@ before_script:
 script:
   - source activate TBK
 
+  - coverage run tests/*
   - coverage xml
 
 after_script:
