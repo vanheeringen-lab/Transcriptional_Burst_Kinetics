@@ -3,6 +3,7 @@ dependencies:
   - numpy
   - python=3.7
   - pandas
+  - numpy
   - pip=19.2.1
   - pip:
     - simpy
