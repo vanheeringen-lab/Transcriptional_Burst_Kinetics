@@ -1,7 +1,11 @@
+import matplotlib.pyplot as plt
+from joblib import Parallel, delayed
 import simpy
-from TBK.MMGPS.gene import Gene
+from TBK.MMGPS.run import run_env
 from TBK.inference import moment_based, maximum_likelihood
+from TBK.BP.bp import beta_poisson3_likelihood, beta_poisson3, beta_poisson4
 import numpy as np
+
 
 if __name__ == "__main__":
     lambd = 2  # rate from inactive -> active
@@ -9,21 +13,14 @@ if __name__ == "__main__":
     nu = 4  # rate from active -> product
     delta = 1  # rate from product -> degraded
 
-    products = []
-    for i in range(75):
-        # start the environment
-        env = simpy.Environment()
+    # generate products through a markovian model
+    # products = np.array(Parallel(n_jobs=50)(delayed(run_env)(lambd, mu, nu, delta) for i in range(1000)))
 
-        # make a gene
-        gene = Gene(env, lambd, mu, nu, delta)
-
-        # run for fixed amount of time
-        env.run(until=5000)
-
-        products.append(len([product for product in gene.products if not product.degraded]))
+    # generate products through the beta poisson model
+    products = beta_poisson3(lambd, mu, nu, size=1000)
 
     print(f'The parameters are: lambda {lambd}, mu {mu}, nu {nu}, delta {delta}')
-    print(f'the parameters based on moment inference is: \t{moment_based(np.array(products))}')
-    print(f'the parameters based on ML: \t\t\t\t\t{maximum_likelihood(np.array(products))}')
-    print(f"The average of gene-products after {env.now} gene-product half-times is {np.mean(products)},")
+    print(f'the parameters based on moment inference is: {moment_based(np.array(products))}')
+    print(f'the parameters based on ML:                  {maximum_likelihood(np.array(products), model="BP3")}')
+    print(f"The average of gene-products {np.mean(products)},")
     print(f"And theoretically we expect: {((lambd * nu) / ((lambd + mu) * delta))}")

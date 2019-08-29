@@ -1,6 +1,6 @@
 import simpy
 import random
-from product import Product
+from .product import Product
 
 
 class Gene:

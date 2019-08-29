@@ -3,6 +3,7 @@ import numpy as np
 import scipy.optimize
 import scipy.stats
 import scipy.special
+from TBK.BP.bp import beta_poisson_log_likelihood, beta_poisson3_log_likelihood
 
 
 @jit()
@@ -17,6 +18,7 @@ def moment_based(vals: np.array) -> np.array:
     m2 = np.sum(vals * (vals - 1)) / len(vals)
     m3 = np.sum(vals * (vals - 1) * (vals - 2)) / len(vals)
 
+    # if any of the moments equals zero, then we would attempt zero divisions, so we return nan
     if 0 in [m1, m2]:
         return np.array([np.nan, np.nan, np.nan])
 
@@ -27,10 +29,11 @@ def moment_based(vals: np.array) -> np.array:
     la_denom = (r1 * r2 - 2 * r1 * r3 + r2 * r3)
     nu_denom = (r1 - 2 * r2 + r3)
 
+    # if any of the denominators is zero we return nan
     if 0 in [la_denom, nu_denom]:
         return np.array([np.nan, np.nan, np.nan])
 
-    # 26
+    # estimate the parameters (26)
     la_est = (2 * r1 * (r3 - r2)) / la_denom
     mu_est = (2 * (r3 - r2) * (r1 - r3) * (r2 - r1)) / (la_denom * nu_denom)
     nu_est = (2 * r1 * r3 - r1 * r2 - r2 * r3) / nu_denom
@@ -38,36 +41,27 @@ def moment_based(vals: np.array) -> np.array:
     return np.array([la_est, mu_est, nu_est])
 
 
-def bp3_log_likelihood(params: tuple, vals: np.array) -> float:
+def maximum_likelihood(vals: np.array, model: str ='BP3') -> np.array:
     """
 
     """
-    alpha, beta, lambd = params
-    x, w = scipy.special.j_roots(50, alpha=beta - 1, beta=alpha - 1)
-    # estimate the
-    gs = np.sum(w*scipy.stats.poisson.pmf(vals, lambd*(x + 1) / 2), axis=1)
+    if model == 'BP3':
+        params = moment_based(vals)
+        if any(params < 0):
+            params = np.array([10, 10, 10])
 
-    # calculate the probability
-    prob = (1 / scipy.special.beta(alpha, beta)) * \
-           (2**(-alpha-beta+1)) * \
-           gs
-
-    return -np.sum(np.log(prob + 1e-10))
-
-
-def maximum_likelihood(vals: np.array) -> np.array:
-    """
-
-    """
-    params = moment_based(vals)
-    if any(params < 0):
-        params = np.array([10, 10, 10])
-
-    # TODO: fix initial guess between bounds
-    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4))
+        # TODO: fix initial guess between bounds
+        bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4))
+    elif model == 'BP4':
+        params = np.array([10, 10, 10, 0.5])
+        bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4), (1e-3, 0.9999))
+    else:
+        raise NotImplementedError
 
     # let scipy do the complicated param estimation
-    res = scipy.optimize.minimize(bp3_log_likelihood,
+    print(params)
+    print(bounds)
+    res = scipy.optimize.minimize(beta_poisson_log_likelihood,
                                   params,
                                   args=vals[..., np.newaxis],
                                   method='L-BFGS-B',
