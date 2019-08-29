@@ -1,0 +1,40 @@
+language: python
+python:
+  - 3.7
+
+
+install:
+  # sudo apt-get update (enable once apt-get is used)
+
+  # install (mini)conda if not cached
+  - if [[ ! -d $HOME/miniconda/bin/ || $TRAVIS_EVENT_TYPE =~ cron ]]; then
+      echo "no cache, or a cron job";
+      conda_cached=false;
+      rm -rf $HOME/miniconda;
+      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+      bash miniconda.sh -b -p $HOME/miniconda;
+    fi
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+
+  # Useful for debugging any issues with conda
+  - conda info -a
+  - conda config --add channels defaults
+  - conda config --add channels conda-forge
+  - conda config --add channels bioconda
+
+  # create snakemake env if not cached
+  - if [ "$conda_cached" = false ]; then
+      conda env create -f environment.yml;
+    fi
+
+
+script:
+  - python tests/beta_poisson.py
+
+# speedup the slow build of our environment by caching (mini)conda
+cache:
+    directories:
+     - ${HOME}/miniconda
