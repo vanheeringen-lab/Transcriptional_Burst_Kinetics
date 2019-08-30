@@ -40,7 +40,8 @@ class TestMarkov(unittest.TestCase):
         expected = (lambd * nu) / ((lambd + mu) * delta)
 
         # the products we have
-        products = [run_env(lambd, mu, nu, delta) for _ in range(1000)]
+        genes = [run_env(lambd, mu, nu, delta)[1] for _ in range(1000)]
+        products = [len([product for product in gene.products if not product.degraded]) for gene in genes]
 
         self.assertTrue(abs(expected - np.mean(products)) < 0.1)
 
