@@ -36,7 +36,7 @@ class Gene:
             self.transcribing.interrupt()
 
         # setup variables
-        self.time_on = self.time_of = 0
+        self.time_on = 0
         self.products = []
         self.switches = 0
 
@@ -55,9 +55,7 @@ class Gene:
             else:
                 if self.transcribing.is_alive:
                     self.transcribing.interrupt()
-                t = random.expovariate(self.la)
-                yield self.env.timeout(t)
-                self.time_of += t
+                yield self.env.timeout(random.expovariate(self.la))
 
             # flip to active / inactive
             self.switches += 1
@@ -74,3 +72,7 @@ class Gene:
                 self.products.append(Product(self.env, self.de))
             except simpy.Interrupt:
                 break
+
+    @property
+    def time_off(self):
+        return self.env.now() - self.time_on
