@@ -30,7 +30,7 @@ class Product:
         """
         Degrade after 1/delta time on average.
         """
-        time = random.expovariate(self.de)
+        time = random.expovariate(self.delta)
         yield self.env.timeout(time)
         self.end = self.env.now
 

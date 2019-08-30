@@ -39,7 +39,7 @@ class Gene:
         self.lambd = lambd  # lambda
         self.mu = mu        # mu
         self.nu = nu        # nu
-        self.de = delta     # delta
+        self.delta = delta  # delta
         self.active = active
 
         # Start the run process every time a Gene is created.
@@ -72,9 +72,7 @@ class Gene:
                 yield self.env.timeout(time)
                 self.time_on += time
             else:
-                time = random.expovariate(self.mu)
-                yield self.env.timeout(time)
-                self.time_of += time
+                yield self.env.timeout(random.expovariate(self.lambd))
 
             # now update our state, and keep track of the total amount of switches
             self.switches += 1
@@ -88,7 +86,7 @@ class Gene:
             try:
                 time = random.expovariate(self.nu)
                 yield self.env.timeout(time)
-                self.products.append(Product(self.env, self.de))
+                self.products.append(Product(self.env, self.delta))
             except simpy.Interrupt:
                 break
 
@@ -97,4 +95,4 @@ class Gene:
         """
         Returns the amount of time the gene was in its inactive (off) state.
         """
-        return self.env.now() - self.time_on
+        return self.env.now - self.time_on
