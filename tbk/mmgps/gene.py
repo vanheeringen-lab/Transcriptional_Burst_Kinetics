@@ -1,5 +1,10 @@
-import simpy
+"""
+Gene product class for the markovian IAP0 model.
+"""
 import random
+
+import simpy
+
 from .product import Product
 
 
@@ -10,23 +15,31 @@ class Gene:
     Depending on whether or not the gene is active or not, it is transcribing gene products.
     """
 
-    def __init__(self, env: simpy.core.Environment, la: float, mu: float, nu: float, de: float, active: bool = False):
+    def __init__(
+            self,
+            env: simpy.core.Environment,
+            lambd: float,
+            mu: float,
+            nu: float,
+            delta: float,
+            active: bool = False
+    ):
         """
         Initialization of the gene.
 
         :param env:    simpy environment class
-        :param la:     lambda (gene activation rate)
+        :param lamd:   lambda (gene activation rate)
         :param mu:     mu (gene inactivation rate)
         :param nu:     nu (product synthesis rate)
-        :param de:     delta (product degradation rate)
+        :param delta:  delta (product degradation rate)
         :param active: whether or not the gene is active
         """
         # store the args in self
         self.env = env
-        self.la = la  # lambda
-        self.mu = mu  # mu
-        self.nu = nu  # nu
-        self.de = de  # delta
+        self.lambd = lambd  # lambda
+        self.mu = mu        # mu
+        self.nu = nu        # nu
+        self.de = delta     # delta
         self.active = active
 
         # Start the run process every time a Gene is created.
@@ -42,9 +55,9 @@ class Gene:
 
     def run(self):
         """
-        While the environment doesn't interrupt this function, the gene switches between active and inactive depending
-        on the the lambda and mu values. When a gene is activated it starts a transcribe process, and when a gene
-        is deactivated, it interrupts it.
+        While the environment doesn't interrupt this function, the gene switches between active and
+        inactive depending on the the lambda and mu values. When a gene is activated it starts a
+        transcribe process, and when a gene is deactivated, it interrupts it.
         """
         while True:
             # switch to on or off
@@ -55,13 +68,13 @@ class Gene:
 
             # stay in the on/off state for a certain amount of time
             if self.active:
-                t = random.expovariate(self.mu)
-                yield self.env.timeout(t)
-                self.time_on += t
+                time = random.expovariate(self.mu)
+                yield self.env.timeout(time)
+                self.time_on += time
             else:
-                t = random.expovariate(self.mu)
-                yield self.env.timeout(t)
-                self.time_of += t
+                time = random.expovariate(self.mu)
+                yield self.env.timeout(time)
+                self.time_of += time
 
             # now update our state, and keep track of the total amount of switches
             self.switches += 1
@@ -73,12 +86,15 @@ class Gene:
         """
         while True:
             try:
-                t = random.expovariate(self.nu)
-                yield self.env.timeout(t)
+                time = random.expovariate(self.nu)
+                yield self.env.timeout(time)
                 self.products.append(Product(self.env, self.de))
             except simpy.Interrupt:
                 break
 
     @property
     def time_off(self):
+        """
+        Returns the amount of time the gene was in its inactive (off) state.
+        """
         return self.env.now() - self.time_on

@@ -1,10 +1,14 @@
+"""
+Function that runs an environment with a gene collecting products.
+"""
 import simpy
-from TBK.MMGPS.gene import Gene
+
+from tbk.mmgps.gene import Gene
 
 
 def run_env(lambd: float, mu: float, nu: float, delta=1, time=5000):
     """
-
+    Run an environment with one gene for a certain amount of time.
     """
     env = simpy.Environment()
 
