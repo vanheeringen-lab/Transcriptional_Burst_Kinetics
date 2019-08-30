@@ -38,6 +38,7 @@ script:
 
   - coverage run    tests/beta_poisson.py
   - coverage run -a tests/markovian_model.py
+  - coverage run -a tests/inference.py
   - coverage xml
 
 after_script:

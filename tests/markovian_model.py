@@ -29,6 +29,22 @@ class TestMarkov(unittest.TestCase):
 
         self.assertTrue(abs(expected - result) < 0.05)
 
+    def test_product_lifetime(self):
+        """
+        Test whether a gene-product takes indeed 1 / delta time to be degraded.
+        """
+        lambd, mu, nu, delta = np.random.randint(1, 8, 4)
+        env, gene = run_env(lambd, mu, nu, delta, time=10000)
+
+        # theoretically we expect...
+        expected = 1 / delta
+
+        # we got..
+        result = np.mean([product.age for product in gene.products])
+
+        self.assertTrue(abs(expected - result) < 0.02)
+
+
     def test_expected(self):
         """
         Test whether the mean of the products corresponds to the theoretical mean.
