@@ -47,17 +47,23 @@ class Gene:
         is deactivated, it interrupts it.
         """
         while True:
+            # switch to on or off
             if self.active:
                 self.transcribing = self.env.process(self.transcribe())
+            elif self.transcribing.is_alive:
+                self.transcribing.interrupt()
+
+            # stay in the on/off state for a certain amount of time
+            if self.active:
                 t = random.expovariate(self.mu)
                 yield self.env.timeout(t)
                 self.time_on += t
             else:
-                if self.transcribing.is_alive:
-                    self.transcribing.interrupt()
-                yield self.env.timeout(random.expovariate(self.la))
+                t = random.expovariate(self.mu)
+                yield self.env.timeout(t)
+                self.time_of += t
 
-            # flip to active / inactive
+            # now update our state, and keep track of the total amount of switches
             self.switches += 1
             self.active ^= True
 
