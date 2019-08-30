@@ -2,6 +2,7 @@
 omit =
     */__init__.py
     tests/*
+source=tbk
 
 [report]
 omit =
