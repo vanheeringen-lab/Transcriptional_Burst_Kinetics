@@ -56,7 +56,7 @@ def get_bounds_params(vals: np.array, model: str = 'BP3') -> Tuple[tuple, np.arr
     lambda1: 10, mu: 10, nu: 10, lambda2: 0.5
     """
     # our parameter estimation bounds
-    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4), (1e-3, 0.9999))
+    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4), (1e-3, 0.9999))
 
     if model == 'BP3':
         params = moment_based(vals)
@@ -95,4 +95,7 @@ def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
     # if not successful return nan, else the result
     if not res.success:
         return np.array([np.nan, np.nan, np.nan])
-    return res.x
+
+    # FIXME: BP4
+    lambda1, alpha, beta = res.x
+    return np.array([alpha, beta, lambda1])

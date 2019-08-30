@@ -20,3 +20,11 @@ def run_env(lambd: float, mu: float, nu: float, delta=1, time=5000)\
     env.run(until=time)
 
     return env, gene
+
+
+def get_products(lambd: float, mu: float, nu: float, delta=1, time=5000) -> int:
+    """
+    Return the number of products from a run.
+    """
+    _, gene = run_env(lambd, mu, nu, delta, time)
+    return len([product for product in gene.products if not product.degraded])

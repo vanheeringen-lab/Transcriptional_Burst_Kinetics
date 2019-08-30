@@ -28,7 +28,7 @@ class Gene:
         Initialization of the gene.
 
         :param env:    simpy environment class
-        :param lamd:   lambda (gene activation rate)
+        :param lambd:  lambda (gene activation rate)
         :param mu:     mu (gene inactivation rate)
         :param nu:     nu (product synthesis rate)
         :param delta:  delta (product degradation rate)

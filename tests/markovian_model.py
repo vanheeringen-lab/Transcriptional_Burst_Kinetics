@@ -2,13 +2,14 @@
 Tests for the markovian model of gene-product synthesis
 """
 
+import multiprocessing as mp
 import unittest
 import numpy as np
 import sys
 import os
 sys.path.append(os.path.abspath(f"{os.getcwd()}/."))
 
-from tbk.mmgps.run import run_env
+from tbk.mmgps.run import get_products, run_env
 
 
 class TestMarkov(unittest.TestCase):
@@ -56,8 +57,8 @@ class TestMarkov(unittest.TestCase):
         expected = (lambd * nu) / ((lambd + mu) * delta)
 
         # the products we have
-        genes = [run_env(lambd, mu, nu, delta)[1] for _ in range(1000)]
-        products = [len([product for product in gene.products if not product.degraded]) for gene in genes]
+        with mp.Pool(processes=12) as pool:
+            products = pool.starmap(get_products, [(lambd, mu, nu, delta) for _ in range(1000)])
 
         self.assertTrue(abs(expected - np.mean(products)) < 0.1)
 
