@@ -2,7 +2,7 @@ import simpy
 from TBK.MMGPS.gene import Gene
 
 
-def run_env(lambd, mu, nu, delta, time=5000):
+def run_env(lambd: float, mu: float, nu: float, delta=1, time=5000):
     """
 
     """

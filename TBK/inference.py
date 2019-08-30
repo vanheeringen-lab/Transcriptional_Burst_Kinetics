@@ -1,12 +1,11 @@
-from numba import jit
 import numpy as np
 import scipy.optimize
 import scipy.stats
 import scipy.special
-from TBK.BP.bp import beta_poisson_log_likelihood, beta_poisson3_log_likelihood
+from TBK.BP.bp import beta_poisson_log_likelihood
+from typing import Tuple
 
 
-@jit()
 def moment_based(vals: np.array) -> np.array:
     """
     Estimate parameters lambda, mu, and nu based on the values' first three moments.
@@ -41,26 +40,36 @@ def moment_based(vals: np.array) -> np.array:
     return np.array([la_est, mu_est, nu_est])
 
 
-def maximum_likelihood(vals: np.array, model: str ='BP3') -> np.array:
+def estimate_bounds_params(vals: np.array, model: str = 'BP3') -> Tuple[tuple, np.array]:
     """
 
     """
+    # our parameter estimation bounds
+    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4), (1e-3, 0.9999))
+
     if model == 'BP3':
         params = moment_based(vals)
         if any(params < 0):
             params = np.array([10, 10, 10])
 
         # TODO: fix initial guess between bounds
-        bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4))
+        # keep only bounds for first three parameters
+        bounds = bounds[:-1]
     elif model == 'BP4':
         params = np.array([10, 10, 10, 0.5])
-        bounds = ((1e-3, 1e3), (1e-3, 1e3), (1, 1e4), (1e-3, 0.9999))
     else:
         raise NotImplementedError
 
+    return bounds, params
+
+
+def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
+    """
+
+    """
+    bounds, params = estimate_bounds_params(vals, model)
+
     # let scipy do the complicated param estimation
-    print(params)
-    print(bounds)
     res = scipy.optimize.minimize(beta_poisson_log_likelihood,
                                   params,
                                   args=vals[..., np.newaxis],
