@@ -2,3 +2,9 @@ engines:
   pylint:
     enabled: true
     channel: "beta"
+
+checks:
+  argument-count:
+    enabled: true
+    config:
+      threshold: 7
