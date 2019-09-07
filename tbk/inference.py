@@ -87,9 +87,9 @@ def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
     Parameters are estimated by scipy optimization
     """
     if model == 'BP3':
-        bounds, params = get_bounds_params3(vals, model)
+        bounds, params = get_bounds_params3(vals)
     elif model == 'BP4':
-        bounds, params = get_bounds_params4(vals, model)
+        bounds, params = get_bounds_params4()
     else:
         raise NotImplementedError
 
