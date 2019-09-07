@@ -45,34 +45,37 @@ def moment_based(vals: np.array) -> np.array:
     return np.array([la_est, mu_est, nu_est])
 
 
-def get_bounds_params(vals: np.array, model: str = 'BP3') -> Tuple[tuple, np.array]:
+def get_bounds_params3(vals: np.array) -> Tuple[tuple, np.array]:
     """
-    Estimate the initial parameters of the model, and its bounds.
+    Estimate the initial parameters of the BP3 model, and its bounds.
 
-    When the model is BP3 the parameters are estimated based on the first three moments of the
-    values. If they are out of bounds, they are set to their closest value inside the bounds.
+    The parameters are estimated based on the first three moments of the values. If they are out of
+    bounds, they are set to their closest value inside the bounds.
+    """
+    # our parameter estimation bounds
+    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4))
 
-    The parameters for the BP4 model are arbitrarily set to;
+    params = moment_based(vals)
+    if np.isnan(params).any() or any(params < 0):
+        params = np.array([10, 10, 10])
+
+    # force estimated params between bounds
+    for i, param in enumerate(params):
+        params[i] = sorted([bounds[i][0], bounds[i][1], param])[1]
+
+    return bounds, params
+
+
+def get_bounds_params4() -> Tuple[tuple, np.array]:
+    """
+    Estimate the initial parameters of the BP4 model, and its bounds.
+
+    The parameters are arbitrarily set to;
     lambda1: 10, mu: 10, nu: 10, lambda2: 0.5
     """
     # our parameter estimation bounds
-    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4), (1e-3, 0.9999))
-
-    if model == 'BP3':
-        params = moment_based(vals)
-        if np.isnan(params).any() or any(params < 0):
-            params = np.array([10, 10, 10])
-
-        # force estimated params between bounds
-        for i, param in enumerate(params):
-            params[i] = sorted([bounds[i][0], bounds[i][1], param])[1]
-
-        # keep only bounds for first three parameters
-        bounds = bounds[:-1]
-    elif model == 'BP4':
-        params = np.array([10, 10, 10, 0.5])
-    else:
-        raise NotImplementedError
+    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4), (1e-3, 1))
+    params = np.array([10, 10, 10, 0.5])
 
     return bounds, params
 
@@ -83,7 +86,12 @@ def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
 
     Parameters are estimated by scipy optimization
     """
-    bounds, params = get_bounds_params(vals, model)
+    if model == 'BP3':
+        bounds, params = get_bounds_params3(vals, model)
+    elif model == 'BP4':
+        bounds, params = get_bounds_params4(vals, model)
+    else:
+        raise NotImplementedError
 
     # let scipy do the complicated param estimation
     res = scipy.optimize.minimize(beta_poisson_log_likelihood,
