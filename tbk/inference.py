@@ -60,7 +60,7 @@ def get_bounds_params(vals: np.array, model: str = 'BP3') -> Tuple[tuple, np.arr
 
     if model == 'BP3':
         params = moment_based(vals)
-        if any(params < 0):
+        if np.isnan(params).any() or any(params < 0):
             params = np.array([10, 10, 10])
 
         # force estimated params between bounds
