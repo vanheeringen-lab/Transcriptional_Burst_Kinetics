@@ -19,9 +19,9 @@ class TestBetaPoisson(unittest.TestCase):
         """
         for i in range(10):
             np.random.seed(i)
-            bp3 = bp.beta_poisson3(1, 2, 3)
+            bp3 = bp.beta_poisson3(2, 3, 1)
             np.random.seed(i)
-            bp4 = bp.beta_poisson4(1, 1, 2, 3)
+            bp4 = bp.beta_poisson4(2, 3, 1, 1)
             self.assertEqual(bp3, bp4)
 
 

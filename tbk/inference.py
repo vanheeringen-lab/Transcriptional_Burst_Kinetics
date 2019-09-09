@@ -105,5 +105,5 @@ def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
         return np.array([np.nan, np.nan, np.nan])
 
     # FIXME: BP4
-    lambda1, alpha, beta = res.x
-    return np.array([alpha, beta, lambda1])
+    alpha, beta, lambd = res.x
+    return np.array([alpha, beta, lambd])
