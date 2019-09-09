@@ -56,7 +56,7 @@ class TestMarkov(unittest.TestCase):
         expected = (lambd * nu) / ((lambd + mu) * delta)
 
         # the products we have
-        with mp.Pool(processes=2) as pool:
+        with mp.Pool(processes=12) as pool:
             products = pool.starmap(get_products, [(lambd, mu, nu, delta) for _ in range(1000)])
 
         self.assertTrue(abs(expected - np.mean(products)) < 0.1)

@@ -16,6 +16,7 @@ def moment_based(vals: np.array) -> np.array:
     Estimate parameters lambda, mu, and nu based on the values' first three moments.
     Based on the paper: Markovian Modelling of Gene Product Synthesis
     """
+    assert len(vals.shape) == 1, "vals should be an 1D array"
 
     # calculate the moments (27)
     m_1 = np.sum(vals) / len(vals)
@@ -52,6 +53,8 @@ def get_bounds_params3(vals: np.array) -> Tuple[tuple, np.array]:
     The parameters are estimated based on the first three moments of the values. If they are out of
     bounds, they are set to their closest value inside the bounds.
     """
+    assert len(vals.shape) == 1, "vals should be an 1D array"
+
     # our parameter estimation bounds
     bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4))
 
@@ -86,6 +89,8 @@ def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
 
     Parameters are estimated by scipy optimization
     """
+    assert len(vals.shape) == 1, "vals should be an 1D array"
+
     if model == 'BP3':
         bounds, params = get_bounds_params3(vals)
     elif model == 'BP4':
@@ -96,7 +101,7 @@ def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
     # let scipy do the complicated param estimation
     res = scipy.optimize.minimize(beta_poisson_log_likelihood,
                                   params,
-                                  args=vals[..., np.newaxis],
+                                  args=vals,
                                   method='L-BFGS-B',
                                   bounds=bounds)
 
