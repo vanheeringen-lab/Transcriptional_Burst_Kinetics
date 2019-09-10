@@ -7,7 +7,6 @@ dependencies:
   - numpy
   - coverage
   - matplotlib
-  - joblib
   - pip=19.2.1
   - pip:
     - simpy

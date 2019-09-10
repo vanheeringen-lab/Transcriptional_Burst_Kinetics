@@ -1,5 +1,5 @@
 """
-Functions related to the estimation of confidence interval
+Functions related to the estimation of confidence interval.
 """
 import copy
 import operator as op
