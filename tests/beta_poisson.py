@@ -8,7 +8,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(f"{os.getcwd()}/."))
 
-from tbk.bp import bp
+from tbk import bp
 
 
 class TestBetaPoisson(unittest.TestCase):

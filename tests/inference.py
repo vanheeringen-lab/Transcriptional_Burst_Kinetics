@@ -9,8 +9,7 @@ import os
 sys.path.append(os.path.abspath(f"{os.getcwd()}/."))
 
 from tbk.inference import moment_based, maximum_likelihood
-from tbk.bp.bp import beta_poisson3
-
+from tbk.bp import beta_poisson3
 
 
 class TestInference(unittest.TestCase):

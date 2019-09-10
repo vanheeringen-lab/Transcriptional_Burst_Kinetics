@@ -9,7 +9,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(f"{os.getcwd()}/."))
 
-from tbk.mmgps.run import get_products, run_env
+from tbk.run import get_products, run_env
 
 
 class TestMarkov(unittest.TestCase):

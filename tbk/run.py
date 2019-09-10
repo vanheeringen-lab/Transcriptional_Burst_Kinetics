@@ -5,7 +5,7 @@ from typing import Tuple
 
 import simpy
 
-from tbk.mmgps.gene import Gene
+from .gene import Gene
 
 
 def run_env(lambd: float, mu: float, nu: float, delta=1, time=5000)\

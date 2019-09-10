@@ -8,7 +8,7 @@ import scipy.optimize
 import scipy.stats
 import scipy.special
 
-from tbk.bp.bp import beta_poisson_log_likelihood
+from .bp import beta_poisson_log_likelihood
 
 
 def moment_based(vals: np.array) -> np.array:
