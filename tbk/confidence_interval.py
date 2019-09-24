@@ -181,6 +181,5 @@ def confidence_intervals(param_estimate: np.array, vals: np.array) -> tuple:
 
         return confidence_freq, confidence_size
     except Exception as e:
-        print(e)
         return np.array([param_estimate[0], np.nan, np.nan]),\
                np.array([param_estimate[1], np.nan, np.nan])
