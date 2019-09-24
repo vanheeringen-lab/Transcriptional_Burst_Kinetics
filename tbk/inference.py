@@ -83,12 +83,18 @@ def get_bounds_params4() -> Tuple[tuple, np.array]:
     return bounds, params
 
 
-def maximum_likelihood(vals: np.array, model: str = 'BP3') -> np.array:
+def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     """
     Get the most likely parameters of either the BP3 or the BP4 model.
 
     Parameters are estimated by scipy optimization
     """
+    # remove the missing value data
+    vals = _vals[~np.isnan(_vals)]
+    # when no gene is expressed, we shouldn't try to infer parameters
+    if not np.any(vals):
+        return np.array([np.nan, np.nan, np.nan])
+
     assert len(vals.shape) == 1, "vals should be an 1D array"
 
     if model == 'BP3':
