@@ -41,6 +41,9 @@ def beta_poisson4_likelihood(
     # estimate the integral
     chances = np.sum(w*scipy.stats.poisson.pmf(vals, lambda1 * (x + 1) / 2), axis=1)
 
+    if np.any(np.isnan(chances)):
+        return np.full_like(chances, np.nan)
+
     # calculate the probabilities
     probs = (1.0 / scipy.special.beta(alpha, beta)) \
             * (2.0**(-alpha-beta+1)) \

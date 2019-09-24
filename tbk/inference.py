@@ -91,8 +91,9 @@ def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     """
     # remove the missing value data
     vals = _vals[~np.isnan(_vals)]
-    # when no gene is expressed, we shouldn't try to infer parameters
-    if not np.any(vals):
+
+    # when no gene is expressed or only 1 value, we shouldn't try to infer parameters
+    if not np.any(vals) or not vals.size > 1:
         return np.array([np.nan, np.nan, np.nan])
 
     assert len(vals.shape) == 1, "vals should be an 1D array"
