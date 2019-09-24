@@ -56,7 +56,7 @@ def get_bounds_params3(vals: np.array) -> Tuple[tuple, np.array]:
     assert len(vals.shape) == 1, "vals should be an 1D array"
 
     # our parameter estimation bounds
-    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4))
+    bounds = ((1e-6, 1e6), (1e-6, 1e6), (1e-6, 1e6))
 
     params = moment_based(vals)
     if np.isnan(params).any() or any(params < 0):
@@ -77,7 +77,7 @@ def get_bounds_params4() -> Tuple[tuple, np.array]:
     lambda1: 10, mu: 10, nu: 10, lambda2: 0.5
     """
     # our parameter estimation bounds
-    bounds = ((1e-3, 1e3), (1e-3, 1e3), (1e-3, 1e4), (1e-3, 1))
+    bounds = ((1e-6, 1e6), (1e-6, 1e6), (1e-6, 1e6), (1e-6, 1))
     params = np.array([10, 10, 10, 0.5])
 
     return bounds, params
