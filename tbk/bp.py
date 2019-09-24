@@ -35,14 +35,18 @@ def beta_poisson4_likelihood(
     # scale to lambda2
     vals = np.copy(_vals)[..., np.newaxis] / lambda2
 
-    # get the sample points and weights
+    # if the optimizer tries to pull a fast one and give us nan values, also return nan
+    if np.any(np.isnan([alpha, beta, lambda1, lambda2])):
+        return np.full(vals.size, np.nan)
+
     x, w = scipy.special.j_roots(50, alpha=beta - 1, beta=alpha - 1)
+    # get the sample points and weights
 
     # estimate the integral
     chances = np.sum(w*scipy.stats.poisson.pmf(vals, lambda1 * (x + 1) / 2), axis=1)
 
     if np.any(np.isnan(chances)):
-        return np.full_like(chances, np.nan)
+        return np.full(vals.size, np.nan)
 
     # calculate the probabilities
     probs = (1.0 / scipy.special.beta(alpha, beta)) \
