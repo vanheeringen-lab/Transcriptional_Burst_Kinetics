@@ -16,8 +16,8 @@ def _beta_poisson_log_likelihood_burst(params: np.array, vals: np.array) -> floa
     """
     Calculate the negative sum of the log likelihood of values corrected for burst_size.
     """
-    assert len(params) == 3 and isinstance(params, np.array), "params should be of length 3 and " \
-                                                              "of type numpy.array"
+    assert len(params) == 3 and isinstance(params, np.ndarray), "params should be of length 3 and "\
+                                                                "of type numpy.array"
     assert len(vals.shape) == 1, "vals should be a 1D array"
     lambd, burst_size, nu = params
     mu = nu / burst_size
@@ -107,8 +107,8 @@ def bounds_params(_params, _vals, param_name, alpha=0.05):
         stepsize = 0.05 * param
 
         # do a max of 100 iterations
-        i = 0
-        while i < 100:
+        curr_i = 0
+        for iteration in range(100):
             param = operator(param, stepsize)
 
             # don't let our parameter go to unreasonable values
@@ -129,14 +129,15 @@ def bounds_params(_params, _vals, param_name, alpha=0.05):
             vals.append(param)
             likelihoods.append(res.fun)
 
-            if i != 0 and \
-                    (2 * (likelihoods[i] - min(likelihoods)) > cutoff + 0.2) and \
-                    (likelihoods[i] > likelihoods[i-1]):
+            if iteration != 0 and \
+                    (2 * (likelihoods[curr_i] - min(likelihoods)) > cutoff + 0.2) and \
+                    (likelihoods[curr_i] > likelihoods[prev_i]):
                 # if we reach our end then stop
                 break
-            else:
-                # increment our iterator
-                i += 1
+
+            # increment our iterator
+            prev_i = curr_i
+            curr_i += 1
 
     # store our likelihoods and values
     likelihoods = np.concatenate((np.array(subtract[2][::-1]),  # add the reverse
@@ -166,7 +167,7 @@ def bounds_params(_params, _vals, param_name, alpha=0.05):
         return np.array([initial_param, np.nan, np.nan]), values, ll_ratio
 
 
-def confidence_intervals(param_estimate: tuple, vals: np.array) -> tuple:
+def confidence_intervals(param_estimate: np.array, vals: np.array) -> tuple:
     """
     Estimate the confidence intervals for the burst frequency (lambda) and burst size (nu / mu).
 
@@ -174,7 +175,12 @@ def confidence_intervals(param_estimate: tuple, vals: np.array) -> tuple:
 
     Returns np.array([most_likely, conf_low, conf_high]) for both burst frequency and burst size.
     """
-    confidence_freq, *_ = bounds_params(param_estimate, vals, 'burst_freq')
-    confidence_size, *_ = bounds_params(param_estimate, vals, 'burst_size')
+    try:
+        confidence_freq, *_ = bounds_params(param_estimate, vals, 'burst_freq')
+        confidence_size, *_ = bounds_params(param_estimate, vals, 'burst_size')
 
-    return confidence_freq, confidence_size
+        return confidence_freq, confidence_size
+    except Exception as e:
+        print(e)
+        return np.array([param_estimate[0], np.nan, np.nan]),\
+               np.array([param_estimate[1], np.nan, np.nan])
