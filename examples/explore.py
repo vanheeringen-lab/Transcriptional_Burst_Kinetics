@@ -28,7 +28,8 @@ if __name__ == "__main__":
 
     print(f'The parameters are: lambda {lambd}, mu {mu}, nu {nu}, delta {delta}')
     print(f'the parameters based on moment inference is: {moment_based(np.array(products))}')
-    print(f'the parameters based on ML:                  {maximum_likelihood(np.array(products), model="BP3")}')
+    print(f'the parameters based on ML:                  '
+          f'{maximum_likelihood(np.array(products), model="BP3")}')
     print(f"The average of gene-products {np.mean(products)},")
     print(f"And theoretically we expect: {((lambd * nu) / ((lambd + mu) * delta))}")
 
