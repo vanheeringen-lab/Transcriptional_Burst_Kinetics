@@ -119,3 +119,48 @@ def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     # FIXME: BP4
     alpha, beta, lambd = res.x
     return np.array([alpha, beta, lambd])
+
+
+def wald_test(_vals_1: np.array, _vals_2: np.array):
+    """
+    Do the wald test
+    """
+    vals_1, vals_2 = np.copy(_vals_1), np.copy(_vals_2)
+
+    # calculate the most likely parameters (theta hat)
+    theta_hat_1 = maximum_likelihood(vals_1)
+    theta_hat_2 = maximum_likelihood(vals_2)
+
+    # print(np)
+    if np.isnan(theta_hat_1).any() or np.isnan(theta_hat_2).any():
+        return theta_hat_1, theta_hat_2, np.array([np.nan, np.nan, np.nan])
+
+    # store the likelihood of the second model
+    zero_hypothesis = beta_poisson_log_likelihood(theta_hat_2, vals_2)
+
+    probabilities = np.zeros(3)
+    for i, _ in enumerate(theta_hat_1):
+        bounds, _ = get_bounds_params3(vals_2)
+
+        # now fix one of the params of the second model to the value of model 1
+        bounds = np.array(bounds)
+        bounds[i] = theta_hat_1[i], theta_hat_1[i]
+        bounds = tuple(tuple(i) for i in np.array(bounds))
+
+        theta_hat_2_c = theta_hat_2.copy()
+        theta_hat_2_c[i] = theta_hat_1[i]
+
+        # now optimize
+        res = scipy.optimize.minimize(beta_poisson_log_likelihood,
+                                      theta_hat_2_c,
+                                      args=vals_2,
+                                      method='L-BFGS-B',
+                                      bounds=bounds)
+
+        theta_zero = beta_poisson_log_likelihood(res.x, vals_2)
+
+        # calculate the
+        probability = 1 - scipy.stats.chi2.cdf(2*(theta_zero - zero_hypothesis), 1)
+        probabilities[i] = probability
+
+    return theta_hat_1, theta_hat_2, probabilities
