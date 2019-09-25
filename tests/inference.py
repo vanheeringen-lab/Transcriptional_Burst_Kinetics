@@ -22,7 +22,7 @@ class TestInference(unittest.TestCase):
     def test_ML3(self):
         np.random.seed(42)
         params = np.array([2.32735786, 0.25476861, 7.44452277])
-        self.assertTrue(np.allclose(params, maximum_likelihood(beta_poisson3(*params, 500)), 0.5))
+        self.assertTrue(np.allclose(params, maximum_likelihood(beta_poisson(*params, 500)), 0.5))
 
 
 if __name__ == '__main__':

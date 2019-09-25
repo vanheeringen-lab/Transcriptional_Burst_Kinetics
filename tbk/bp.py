@@ -6,22 +6,22 @@ import scipy.special
 import scipy.stats
 
 
-def beta_poisson3(alpha: float, beta: float, lambd: float, size: int = 1) -> np.array:
+def beta_poisson(alpha: float, beta: float, lambd: float, size: int = 1) -> np.array:
     """
     Generate 'random' data from the beta poisson 3 model.
     """
     return np.random.poisson(lambd * np.random.beta(alpha, beta, size))
 
 
-def beta_poisson4(alpha: float, beta: float, lambda1: float, lambda2: float, size: int = 1) \
+def beta_poisson(alpha: float, beta: float, lambda1: float, lambda2: float, size: int = 1) \
         -> np.array:
     """
     Generate 'random' data from the beta poisson 4 model.
     """
-    return lambda2 * beta_poisson3(alpha, beta, lambda1, size)
+    return lambda2 * beta_poisson(alpha, beta, lambda1, size=size)
 
 
-def beta_poisson4_likelihood(
+def beta_poisson_likelihood(
         alpha: float,
         beta: float,
         lambda1: float,
@@ -56,24 +56,24 @@ def beta_poisson4_likelihood(
     return probs
 
 
-def beta_poisson3_likelihood(alpha: float, beta: float, lambd: float, vals: np.array) -> np.array:
+def beta_poisson_likelihood(alpha: float, beta: float, lambd: float, vals: np.array) -> np.array:
     """
     Calculate the likelihood for each value in your array of values, based on the beta poisson 3
     model. Calls the beta_poisson4_likelihood with lambda2 as 1, effectively making it a bp3 model.
     """
     assert len(vals.shape) == 1, "vals should be an 1D array"
-    return beta_poisson4_likelihood(alpha, beta, lambd, 1.0, vals)
+    return beta_poisson_likelihood(alpha, beta, lambd, 1.0, vals)
 
 
-def beta_poisson3_log_likelihood(alpha: float, beta: float, lambd: float,  vals: np.array) -> float:
+def beta_poisson_log_likelihood(alpha: float, beta: float, lambd: float, vals: np.array) -> float:
     """
     Calculate the negative sum of the log likelihood of values for the beta poisson 3 model.
     """
     assert len(vals.shape) == 1, "vals should be an 1D array"
-    return -np.sum(np.log(beta_poisson3_likelihood(alpha, beta, lambd, vals) + 1e-10))
+    return -np.sum(np.log(beta_poisson_likelihood(alpha, beta, lambd, vals) + 1e-10))
 
 
-def beta_poisson4_log_likelihood(
+def beta_poisson_log_likelihood(
         alpha: float,
         beta: float,
         lambda1: float,
@@ -84,7 +84,7 @@ def beta_poisson4_log_likelihood(
     Calculate the negative sum of the log likelihood of values for the beta poisson 4 model.
     """
     assert len(vals.shape) == 1, "vals should be an 1D array"
-    return -np.sum(np.log(beta_poisson4_likelihood(alpha, beta, lambda1, lambda2, vals) + 1e-10))
+    return -np.sum(np.log(beta_poisson_likelihood(alpha, beta, lambda1, lambda2, vals) + 1e-10))
 
 
 def beta_poisson_log_likelihood(params: np.array, vals: np.array) -> float:
@@ -99,6 +99,4 @@ def beta_poisson_log_likelihood(params: np.array, vals: np.array) -> float:
     if len(params) not in [3, 4]:
         raise NotImplementedError
 
-    if len(params) == 3:
-        return beta_poisson3_log_likelihood(*params, vals)
-    return beta_poisson4_log_likelihood(*params, vals)
+    return beta_poisson_log_likelihood(*params, vals)
