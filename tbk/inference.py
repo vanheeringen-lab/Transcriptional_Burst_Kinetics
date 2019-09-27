@@ -82,7 +82,10 @@ def get_bounds_params4() -> Tuple[tuple, np.array]:
 
     return bounds, params
 
+from tbk.numpy_lru_cache_decorator import np_cache
 
+
+# @np_cache()
 def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     """
     Get the most likely parameters of either the BP3 or the BP4 model.
@@ -131,7 +134,6 @@ def wald_test(_vals_1: np.array, _vals_2: np.array):
     theta_hat_1 = maximum_likelihood(vals_1)
     theta_hat_2 = maximum_likelihood(vals_2)
 
-    # print(np)
     if np.isnan(theta_hat_1).any() or np.isnan(theta_hat_2).any():
         return theta_hat_1, theta_hat_2, np.array([np.nan, np.nan, np.nan])
 

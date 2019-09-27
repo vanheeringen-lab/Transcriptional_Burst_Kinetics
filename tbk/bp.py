@@ -8,7 +8,7 @@ import scipy.stats
 
 def beta_poisson3(alpha: float, beta: float, lambd: float, size: int = 1) -> np.array:
     """
-    Generate 'random' data from the beta poisson 3 model.
+    Generate data sampled from the beta poisson 3 distribution.
     """
     return np.random.poisson(lambd * np.random.beta(alpha, beta, size))
 
@@ -16,7 +16,7 @@ def beta_poisson3(alpha: float, beta: float, lambd: float, size: int = 1) -> np.
 def beta_poisson4(alpha: float, beta: float, lambda1: float, lambda2: float, size: int = 1) \
         -> np.array:
     """
-    Generate 'random' data from the beta poisson 4 model.
+    Generate data sampled from the beta poisson 4 distribution.
     """
     return lambda2 * beta_poisson3(alpha, beta, lambda1, size)
 
@@ -39,8 +39,8 @@ def beta_poisson4_likelihood(
     if np.any(np.isnan([alpha, beta, lambda1, lambda2])):
         return np.full(vals.size, np.nan)
 
-    x, w = scipy.special.j_roots(50, alpha=beta - 1, beta=alpha - 1)
     # get the sample points and weights
+    x, w = scipy.special.j_roots(50, alpha=beta - 1, beta=alpha - 1)
 
     # estimate the integral
     chances = np.sum(w*scipy.stats.poisson.pmf(vals, lambda1 * (x + 1) / 2), axis=1)
