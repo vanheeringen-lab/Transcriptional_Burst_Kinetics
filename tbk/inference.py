@@ -82,15 +82,12 @@ def get_bounds_params4() -> Tuple[tuple, np.array]:
 
     return bounds, params
 
-from tbk.numpy_lru_cache_decorator import np_cache
 
-
-# @np_cache()
 def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     """
     Get the most likely parameters of either the BP3 or the BP4 model.
 
-    Parameters are estimated by scipy optimization
+    Parameters are estimated by scipy optimization.
     """
     # remove the missing value data
     vals = _vals[~np.isnan(_vals)]
@@ -108,10 +105,13 @@ def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     else:
         raise NotImplementedError
 
+    # convert our values to the unique values and their counts
+    vals = np.unique(vals, return_counts=True)
+
     # let scipy do the complicated param estimation
     res = scipy.optimize.minimize(beta_poisson_log_likelihood,
                                   params,
-                                  args=vals,
+                                  args=(vals, ),
                                   method='L-BFGS-B',
                                   bounds=bounds)
 
