@@ -27,7 +27,8 @@ def beta_poisson4_log_likelihood(
         beta: float,
         lambda1: float,
         lambda2: float,
-        vals: Tuple[np.ndarray, np.ndarray]  # tuple of values and their corresponding counts
+        vals: Tuple[np.ndarray, np.ndarray],  # tuple of values and their corresponding counts
+        return_sum: bool = True
 ) -> np.array:
     """
     Calculate the log likelihood for your values, based on the beta poisson 4 model.
@@ -52,6 +53,9 @@ def beta_poisson4_log_likelihood(
     probs = (1.0 / scipy.special.beta(alpha, beta)) \
             * (2.0**(-alpha-beta+1)) \
             * chances
+
+    if not return_sum:
+        return probs
 
     # now calculate the log likelihood
     probs = -np.sum(np.log(probs + 1e-10) * counts)
