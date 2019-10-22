@@ -88,7 +88,7 @@ def np_cache(function):
     """
     Small decorator that caches np arrays.
     """
-    @lru_cache()
+    @lru_cache(maxsize=25000)
     def cached_wrapper(hashable_array):
         array = np.fromstring(hashable_array, dtype=int)
         return function(array)
@@ -146,9 +146,10 @@ def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     return np.array([alpha, beta, lambd])
 
 
-def wald_test(_vals_1: np.array, _vals_2: np.array):
+def likelihood_ratio_test(_vals_1: np.array, _vals_2: np.array):
     """
-    Do the wald test
+    Caclulate the parameters both values, and test if they are the same or different through the
+    likelihood ratio test.
     """
     vals_1, vals_2 = np.copy(_vals_1), np.copy(_vals_2)
     vals_2_uniques, vals_2_counts = np.unique(vals_2, return_counts=True)
