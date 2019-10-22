@@ -106,12 +106,12 @@ def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
         raise NotImplementedError
 
     # convert our values to the unique values and their counts
-    vals = np.unique(vals, return_counts=True)
+    uniques, counts = np.unique(vals, return_counts=True)
 
     # let scipy do the complicated param estimation
     res = scipy.optimize.minimize(beta_poisson_log_likelihood,
                                   params,
-                                  args=(vals, ),
+                                  args=(uniques, counts),
                                   method='L-BFGS-B',
                                   bounds=bounds)
 
@@ -129,6 +129,7 @@ def wald_test(_vals_1: np.array, _vals_2: np.array):
     Do the wald test
     """
     vals_1, vals_2 = np.copy(_vals_1), np.copy(_vals_2)
+    vals_2_uniques, vals_2_counts = np.unique(vals_2, return_counts=True)
 
     # calculate the most likely parameters (theta hat)
     theta_hat_1 = maximum_likelihood(vals_1)
@@ -138,7 +139,7 @@ def wald_test(_vals_1: np.array, _vals_2: np.array):
         return theta_hat_1, theta_hat_2, np.array([np.nan, np.nan, np.nan])
 
     # store the likelihood of the second model
-    zero_hypothesis = beta_poisson_log_likelihood(theta_hat_2, vals_2)
+    zero_hypothesis = beta_poisson_log_likelihood(theta_hat_2, vals_2_uniques, vals_2_counts)
 
     probabilities = np.zeros(3)
     for i, _ in enumerate(theta_hat_1):
@@ -155,11 +156,11 @@ def wald_test(_vals_1: np.array, _vals_2: np.array):
         # now optimize
         res = scipy.optimize.minimize(beta_poisson_log_likelihood,
                                       theta_hat_2_c,
-                                      args=vals_2,
+                                      args=(vals_2_uniques, vals_2_counts),
                                       method='L-BFGS-B',
                                       bounds=bounds)
 
-        theta_zero = beta_poisson_log_likelihood(res.x, vals_2)
+        theta_zero = beta_poisson_log_likelihood(res.x, vals_2_uniques, vals_2_counts)
 
         # calculate the
         probability = 1 - scipy.stats.chi2.cdf(2*(theta_zero - zero_hypothesis), 1)
