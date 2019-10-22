@@ -3,6 +3,7 @@ Estimate (infer) the parameters of the IAP and/or Beta Poisson models.
 """
 from typing import Tuple
 
+from functools import lru_cache, wraps
 import numpy as np
 import scipy.optimize
 import scipy.stats
@@ -83,6 +84,27 @@ def get_bounds_params4() -> Tuple[tuple, np.array]:
     return bounds, params
 
 
+def np_cache(function):
+    """
+    Small decorator that caches np arrays.
+    """
+    @lru_cache()
+    def cached_wrapper(hashable_array):
+        array = np.fromstring(hashable_array, dtype=int)
+        return function(array)
+
+    @wraps(function)
+    def wrapper(array):
+        return cached_wrapper(np.sort(array).tostring())
+
+    # copy lru_cache attributes over too
+    wrapper.cache_info = cached_wrapper.cache_info
+    wrapper.cache_clear = cached_wrapper.cache_clear
+
+    return wrapper
+
+
+@np_cache
 def maximum_likelihood(_vals: np.array, model: str = 'BP3') -> np.array:
     """
     Get the most likely parameters of either the BP3 or the BP4 model.
