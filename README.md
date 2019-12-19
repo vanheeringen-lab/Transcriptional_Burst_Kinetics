@@ -9,7 +9,7 @@ Private effort of bundling different transcriptional burst kinetics methods into
 The 'original' markov model of Peccoud & Ycart where a gene can either be in an active state (A), or inactive state (I). When a gene is in an active state, it produces gene-products (P), which then get broken down (Ø):
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/vanheeringen-lab/Transcriptional_Burst_Kinetics/master/imgs/markov.jpg?sanitize=true">
+    <img src="imgs/markov.jpg?sanitize=true">
 </p>
 
 In [gene](https://github.com/vanheeringen-lab/Transcriptional_Burst_Kinetics/blob/master/tbk/gene.py), [product](https://github.com/vanheeringen-lab/Transcriptional_Burst_Kinetics/blob/master/tbk/product.py), and [run](https://github.com/vanheeringen-lab/Transcriptional_Burst_Kinetics/blob/master/tbk/run.py) the code is implemented to run this markovian model. Estimating the parameters with their first three moments is implemented in [inference](https://github.com/vanheeringen-lab/Transcriptional_Burst_Kinetics/blob/master/tbk/inference.py).
