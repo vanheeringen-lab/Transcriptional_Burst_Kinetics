@@ -26,4 +26,4 @@ The sandberg-lab made an addition to the beta-poisson 3 model with which you can
 Take a look at our [examples](https://github.com/vanheeringen-lab/Transcriptional_Burst_Kinetics/tree/master/examples) on how to run the code.
 
 ## Notes
-Different groups use different notations for the parameters. The name of the parameter we use is always the name of its respective paper, however (for consistency) they are always passed to every function in the same order.
+Different groups use different notations for the parameters. The name of the parameter we use is always the name of its corresponding paper, however (for consistency) they are always passed to every function in the same order.
